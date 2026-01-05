@@ -22,6 +22,16 @@ A terminal-inspired, keyboard-centric code snippet manager.
     ```
 
 2.  **Run the App:**
+    You can use the provided script to manage the server in the background:
+    ```bash
+    ./start.sh start
+    ```
+    To stop or restart the server:
+    ```bash
+    ./start.sh stop
+    ./start.sh restart
+    ```
+    *Alternatively, for development with auto-reload:*
     ```bash
     uvicorn main:app --reload
     ```
