@@ -26,9 +26,7 @@
                     class="text-accent hover:text-white hover:underline">
                 [edit]
             </button>
-            <button hx-delete="/delete/{{ snippet.id }}" 
-                    hx-target="#snippet-{{ snippet.id }}" 
-                    hx-swap="outerHTML"
+            <button onclick="openDeleteModal({{ snippet.id }})" 
                     class="text-red-400 hover:text-red-300 hover:underline">
                 [rm]
             </button>

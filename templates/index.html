@@ -62,9 +62,58 @@
     </details>
 </div>
 
-<!-- Monaco Editor Initialization & Keyboard Shortcuts -->
+<!-- Snippet Grid -->
+<div id="snippet-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {% include 'snippet_list.html' %}
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-modal" class="modal-backdrop">
+    <div class="modal-content">
+        <h3 class="font-bold text-lg mb-2">Delete Snippet?</h3>
+        <p class="text-sm text-gray-400 mb-6">Are you sure you want to delete this snippet? This action cannot be undone.</p>
+        <div class="modal-actions">
+            <button onclick="closeDeleteModal()" class="btn-secondary">Cancel</button>
+            <button id="confirm-delete-btn" 
+                    hx-swap="outerHTML"
+                    class="btn-danger">
+                Delete
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Monaco Editor Initialization & Keyboard Shortcuts & Modal Logic -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
 <script>
+    // --- DELETE MODAL ---
+    const confirmBtn = document.getElementById('confirm-delete-btn');
+
+    // Handle modal close after successful delete
+    if (confirmBtn) {
+        confirmBtn.addEventListener('htmx:afterRequest', function(evt) {
+            if(evt.detail.successful) {
+                closeDeleteModal();
+            }
+        });
+    }
+
+    function openDeleteModal(id) {
+        const modal = document.getElementById('delete-modal');
+        const btn = document.getElementById('confirm-delete-btn');
+        
+        btn.setAttribute('hx-delete', `/delete/${id}`);
+        btn.setAttribute('hx-target', `#snippet-${id}`);
+        
+        htmx.process(btn);
+        
+        modal.classList.add('active');
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('delete-modal').classList.remove('active');
+    }
+
     function resetForm() {
         document.querySelector('form').reset();
         document.getElementById('snippet-id').value = "";
@@ -224,9 +273,4 @@
         }
     });
 </script>
-
-<!-- Snippet Grid -->
-<div id="snippet-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    {% include 'snippet_list.html' %}
-</div>
 {% endblock %}
