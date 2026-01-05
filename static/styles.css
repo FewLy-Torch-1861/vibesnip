@@ -1,0 +1,53 @@
+/* VibeSnip Base Styles - Terminal Aesthetic */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+    --bg-color: #1e1e2e; /* Catppuccin Base */
+    --text-color: #cdd6f4; /* Catppuccin Text */
+    --accent-color: #89b4fa; /* Catppuccin Blue */
+    --success-color: #a6e3a1; /* Catppuccin Green */
+    --border-color: #45475a; /* Catppuccin Surface1 */
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.terminal-card {
+    background: #181825; /* Darker background for cards */
+    border: 1px solid var(--border-color);
+    box-shadow: 4px 4px 0px var(--border-color); /* Retro shadow */
+}
+
+.terminal-input {
+    background: #11111b;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.terminal-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.terminal-btn {
+    background: var(--border-color);
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.terminal-btn:hover {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    box-shadow: 2px 2px 0px var(--text-color);
+    transform: translate(-1px, -1px);
+}
+
+.terminal-btn:active {
+    box-shadow: 0px 0px 0px;
+    transform: translate(1px, 1px);
+}

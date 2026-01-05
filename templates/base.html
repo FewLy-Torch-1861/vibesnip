@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeSnip</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <!-- Highlight.js for Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- CodeJar for Mini IDE Editor -->
+    <script type="module">
+      import { CodeJar } from 'https://medv.io/codejar/codejar.js'
+      window.CodeJar = CodeJar;
+    </script>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bg: '#1e1e2e',
+                        text: '#cdd6f4',
+                        accent: '#89b4fa',
+                        success: '#a6e3a1',
+                        border: '#45475a',
+                        card: '#181825',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="p-6 md:p-12 min-h-screen">
+    <div class="max-w-5xl mx-auto">
+        <header class="mb-8 flex justify-between items-center border-b border-border pb-4">
+            <h1 class="text-3xl font-bold text-accent tracking-tighter">
+                <span class="text-success">$</span> VibeSnip
+            </h1>
+            <div class="text-sm text-gray-500">v1.0.0</div>
+        </header>
+        
+        {% block content %}{% endblock %}
+    </div>
+    
+    <script>
+        // Initialize Highlight.js
+        hljs.highlightAll();
+
+        // Re-highlight after HTMX swaps (like searching or adding)
+        document.body.addEventListener('htmx:afterSwap', function(evt) {
+            document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightElement(block);
+            });
+        });
+
+        function copyToClipboard(btn) {
+            const card = btn.closest('.relative');
+            const code = card.querySelector('code').textContent; // Use textContent for raw text
+            
+            // Try modern API first
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(code).then(() => showFeedback(btn));
+            } else {
+                // Fallback for HTTP/LAN
+                const textArea = document.createElement("textarea");
+                textArea.value = code;
+                textArea.style.position = "fixed"; // Avoid scrolling to bottom
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showFeedback(btn);
+                } catch (err) {
+                    console.error('Fallback copy failed', err);
+                    alert("Copy failed. Browser security may be blocking it.");
+                }
+                document.body.removeChild(textArea);
+            }
+        }
+
+        function showFeedback(btn) {
+            const originalText = btn.innerText;
+            btn.innerText = "COPIED!";
+            setTimeout(() => btn.innerText = originalText, 2000);
+        }
+
+        async function loadSnippet(id) {
+            try {
+                const response = await fetch(`/snippets/${id}`);
+                if (!response.ok) throw new Error("Failed to fetch snippet");
+                const data = await response.json();
+                
+                // Populate Form
+                const form = document.querySelector('form');
+                form.title.value = data.title;
+                form.language.value = data.language;
+                form.tags.value = data.tags;
+                
+                // Populate Monaco
+                if (window.monacoEditor) {
+                    window.monacoEditor.setValue(data.code);
+                    monaco.editor.setModelLanguage(window.monacoEditor.getModel(), data.language);
+                }
+
+                // Set ID
+                document.getElementById('snippet-id').value = data.id;
+                
+                // Open Form & UI Updates
+                const details = document.getElementById('add-form');
+                details.open = true;
+                
+                document.getElementById('form-title').innerText = "Edit Snippet #" + id;
+                document.getElementById('save-btn').innerText = "UPDATE";
+                
+                // Force Monaco Layout Refresh (crucial when opening <details>)
+                setTimeout(() => {
+                    if (window.monacoEditor) window.monacoEditor.layout();
+                }, 100);
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (e) {
+                console.error(e);
+                alert("Error loading snippet: " + e.message);
+            }
+        }
+    </script>
+</body>
+</html>
