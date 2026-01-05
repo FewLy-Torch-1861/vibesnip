@@ -1,0 +1,15 @@
+services:
+  vibesnip:
+    build: .
+    image: vibesnip:latest
+    container_name: vibesnip
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persist the database
+      - ./vibesnip.db:/app/vibesnip.db
+      # Persist logs (optional)
+      - ./server.log:/app/server.log
+    environment:
+      - PORT=8000

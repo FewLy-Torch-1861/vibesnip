@@ -5,15 +5,17 @@
     <!-- Actions Bar -->
     <div class="flex flex-col md:flex-row gap-4 mb-6">
         <input type="text" 
+               id="search-input"
                name="q"
                hx-get="/search" 
                hx-trigger="keyup changed delay:200ms" 
                hx-target="#snippet-grid" 
-               placeholder="> search snippets..." 
+               placeholder="> search snippets... (Ctrl + /)" 
                class="terminal-input flex-grow p-3 rounded font-mono text-sm w-full md:w-2/3">
         
         <button onclick="document.getElementById('add-form').toggleAttribute('open')" 
-                class="terminal-btn px-6 py-3 rounded font-bold text-sm text-center">
+                class="terminal-btn px-6 py-3 rounded font-bold text-sm text-center"
+                title="Alt + N">
             + NEW SNIPPET
         </button>
     </div>
@@ -53,14 +55,14 @@
             
             <div class="flex justify-end gap-2">
                 <button type="button" onclick="resetForm(); document.getElementById('add-form').removeAttribute('open')" 
-                        class="text-gray-500 hover:text-white px-4 py-2 text-sm">Cancel</button>
-                <button type="submit" id="save-btn" class="terminal-btn px-6 py-2 rounded font-bold text-sm">SAVE</button>
+                        class="text-gray-500 hover:text-white px-4 py-2 text-sm">Cancel (Esc)</button>
+                <button type="submit" id="save-btn" class="terminal-btn px-6 py-2 rounded font-bold text-sm" title="Ctrl + Enter">SAVE</button>
             </div>
         </form>
     </details>
 </div>
 
-<!-- Monaco Editor Initialization -->
+<!-- Monaco Editor Initialization & Keyboard Shortcuts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
 <script>
     function resetForm() {
@@ -92,12 +94,10 @@
         // Sync Language Dropdown
         document.getElementById('lang-select').addEventListener('change', function(e) {
             let lang = e.target.value;
-            // Map common names if necessary, Monaco uses standard IDs
             monaco.editor.setModelLanguage(window.monacoEditor.getModel(), lang);
         });
 
-        // REAL-TIME SYNC: Update hidden input whenever editor content changes
-        // This ensures HTMX always grabs the latest data
+        // REAL-TIME SYNC
         window.monacoEditor.onDidChangeModelContent(() => {
             document.getElementById("code-input").value = window.monacoEditor.getValue();
         });
@@ -107,9 +107,121 @@
             if (this.open) {
                 setTimeout(() => {
                     if (window.monacoEditor) window.monacoEditor.layout();
+                    // Auto-focus title
+                    document.querySelector('input[name="title"]').focus();
                 }, 50);
             }
         });
+    });
+
+    // --- KEYBOARD SHORTCUTS ---
+    let selectedIndex = -1;
+
+    function getSnippets() {
+        return Array.from(document.querySelectorAll('.snippet-card'));
+    }
+
+    function updateSelection() {
+        const snippets = getSnippets();
+        if (snippets.length === 0) return;
+
+        // Wrap around
+        if (selectedIndex < 0) selectedIndex = 0;
+        if (selectedIndex >= snippets.length) selectedIndex = snippets.length - 1;
+
+        snippets.forEach((card, idx) => {
+            if (idx === selectedIndex) {
+                card.classList.add('selected');
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                card.classList.remove('selected');
+            }
+        });
+    }
+
+    document.addEventListener('keydown', function(e) {
+        // Ignore shortcuts if typing in an input or the editor
+        const isInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT';
+        const isEditor = e.target.closest('.monaco-editor');
+
+        // Global: Ctrl + / (Search)
+        if (e.key === '/' && e.ctrlKey) {
+            e.preventDefault();
+            document.getElementById('search-input').focus();
+            return;
+        }
+
+        // Global: Alt + N (New Snippet)
+        if (e.key === 'n' && e.altKey) {
+            e.preventDefault();
+            const form = document.getElementById('add-form');
+            if (form.open) {
+                form.removeAttribute('open');
+            } else {
+                form.setAttribute('open', '');
+            }
+            return;
+        }
+
+        // Context: Form Open
+        const formOpen = document.getElementById('add-form').hasAttribute('open');
+        if (formOpen) {
+            // Ctrl + Enter (Save)
+            if (e.key === 'Enter' && e.ctrlKey) {
+                e.preventDefault();
+                document.querySelector('form button[type="submit"]').click();
+                return;
+            }
+            // Esc (Cancel)
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                document.getElementById('add-form').removeAttribute('open');
+                resetForm();
+                return;
+            }
+            return; // Don't process nav keys if form is open
+        }
+
+        // Context: Navigation (Only if NOT in input)
+        if (!isInput && !isEditor) {
+            if (e.key === 'j' || e.key === 'ArrowDown') {
+                selectedIndex++;
+                updateSelection();
+            } else if (e.key === 'k' || e.key === 'ArrowUp') {
+                selectedIndex--;
+                updateSelection();
+            } else if (e.key === 'e') {
+                // Edit Selected
+                const snippets = getSnippets();
+                if (selectedIndex >= 0 && snippets[selectedIndex]) {
+                    const editBtn = snippets[selectedIndex].querySelector('button[onclick*="loadSnippet"]');
+                    if (editBtn) editBtn.click();
+                }
+            } else if (e.key === 'Enter') {
+                // Copy Selected
+                const snippets = getSnippets();
+                if (selectedIndex >= 0 && snippets[selectedIndex]) {
+                    const copyBtn = snippets[selectedIndex].querySelector('button[onclick*="copyToClipboard"]');
+                    if (copyBtn) copyBtn.click();
+                }
+            } else if (e.key === '/') {
+                // Vim / (Search)
+                e.preventDefault();
+                document.getElementById('search-input').focus();
+            }
+        }
+        
+        // Context: Input (Esc to blur)
+        if (isInput && e.key === 'Escape') {
+            e.target.blur();
+        }
+    });
+
+    // Reset selection on search update
+    document.body.addEventListener('htmx:afterSwap', function(evt) {
+        if (evt.detail.target.id === 'snippet-grid') {
+            selectedIndex = -1;
+        }
     });
 </script>
 

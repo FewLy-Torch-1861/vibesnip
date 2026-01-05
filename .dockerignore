@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.venv/
+.git/
+.gitignore
+*.log
+docker-compose.yml
+Dockerfile
+README.md
+PLAN.md
+start.sh
+debug_db.py

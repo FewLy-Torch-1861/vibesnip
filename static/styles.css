@@ -1,53 +1,65 @@
-/* VibeSnip Base Styles - Terminal Aesthetic */
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
-
 :root {
-    --bg-color: #1e1e2e; /* Catppuccin Base */
-    --text-color: #cdd6f4; /* Catppuccin Text */
-    --accent-color: #89b4fa; /* Catppuccin Blue */
-    --success-color: #a6e3a1; /* Catppuccin Green */
-    --border-color: #45475a; /* Catppuccin Surface1 */
+    --bg: #1e1e2e;
+    --text: #cdd6f4;
+    --accent: #89b4fa;
+    --success: #a6e3a1;
+    --border: #45475a;
+    --card: #181825;
 }
 
 body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    font-family: 'JetBrains Mono', monospace;
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
-.terminal-card {
-    background: #181825; /* Darker background for cards */
-    border: 1px solid var(--border-color);
-    box-shadow: 4px 4px 0px var(--border-color); /* Retro shadow */
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
 }
 
 .terminal-input {
-    background: #11111b;
-    border: 1px solid var(--border-color);
-    color: var(--text-color);
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    transition: all 0.2s;
 }
 
 .terminal-input:focus {
+    border-color: var(--accent);
     outline: none;
-    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(137, 180, 250, 0.2);
 }
 
 .terminal-btn {
-    background: var(--border-color);
-    color: var(--text-color);
-    border: 1px solid var(--text-color);
-    cursor: pointer;
-    transition: all 0.1s;
+    background-color: var(--accent);
+    color: var(--bg);
+    transition: all 0.2s;
 }
 
 .terminal-btn:hover {
-    background: var(--accent-color);
-    color: var(--bg-color);
-    box-shadow: 2px 2px 0px var(--text-color);
-    transform: translate(-1px, -1px);
+    filter: brightness(1.1);
+    transform: translateY(-1px);
 }
 
 .terminal-btn:active {
-    box-shadow: 0px 0px 0px;
-    transform: translate(1px, 1px);
+    transform: translateY(0);
+}
+
+/* Selected Snippet (Vim Mode) */
+.snippet-card.selected {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 2px var(--accent);
+    transform: scale(1.01);
+    transition: all 0.1s;
 }
