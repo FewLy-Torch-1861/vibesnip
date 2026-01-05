@@ -14,6 +14,9 @@ env/
 *.log
 logs/
 
+# Runtime
+server.pid
+
 # IDEs
 .vscode/
 .idea/
