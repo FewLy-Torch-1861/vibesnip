@@ -6,11 +6,27 @@
     </div>
     
     <div class="relative group/code">
-        <pre class="bg-[#1e1e2e] !bg-opacity-100 rounded overflow-hidden text-sm border border-border mb-3 font-mono p-0"><code class="language-{{ snippet.language }} p-4 block">{{ snippet.code }}</code></pre>
+        {% set code_content = snippet.code or '' %}
+        {% set lines = code_content.strip().splitlines()|length %}
+        {% set is_long = lines > 10 %}
+        
+        <div class="snippet-content {% if is_long %}collapsed{% else %}mb-3{% endif %}">
+            <pre class="bg-[#1e1e2e] !bg-opacity-100 rounded overflow-hidden text-sm border border-border font-mono p-0"><code class="language-{{ snippet.language }} p-4 block">{{ code_content }}</code></pre>
+            {% if is_long %}
+            <div class="snippet-fade"></div>
+            {% endif %}
+        </div>
+        
         <button onclick="copyToClipboard(this)" 
                 class="absolute top-2 right-2 opacity-0 group-hover/code:opacity-100 bg-accent text-bg px-2 py-1 text-xs rounded font-bold transition-opacity z-10">
             COPY
         </button>
+
+        {% if is_long %}
+        <button onclick="toggleSnippet(this)" class="text-xs text-accent hover:underline mb-3 focus:outline-none block w-full text-center">
+            Show more
+        </button>
+        {% endif %}
     </div>
 
     <div class="flex justify-between items-center text-xs text-gray-400 mt-2">

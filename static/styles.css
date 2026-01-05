@@ -161,3 +161,30 @@ body {
 .btn-danger:hover {
     filter: brightness(1.1);
 }
+
+/* Collapsible Snippets */
+.snippet-content {
+    position: relative;
+    transition: max-height 0.3s ease-out;
+    overflow: hidden;
+}
+
+.snippet-content.collapsed {
+    max-height: 240px; /* Limit to ~10-12 lines */
+}
+
+.snippet-fade {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    background: linear-gradient(to top, #1e1e2e, transparent);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+}
+
+.snippet-content.collapsed .snippet-fade {
+    opacity: 1;
+}
