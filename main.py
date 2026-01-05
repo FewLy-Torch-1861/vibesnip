@@ -61,6 +61,9 @@ async def save_snippet(
     tags: str = Form(""),
     db: Session = Depends(get_db)
 ):
+    if not title.strip() or not code.strip():
+        raise HTTPException(status_code=400, detail="Title and Code are required")
+
     if snippet_id and snippet_id != "null" and snippet_id.strip():
         # Update existing
         snippet = db.query(models.Snippet).filter(models.Snippet.id == int(snippet_id)).first()

@@ -4,14 +4,21 @@
 <div class="mb-8">
     <!-- Actions Bar -->
     <div class="flex flex-col md:flex-row gap-4 mb-6">
-        <input type="text" 
-               id="search-input"
-               name="q"
-               hx-get="/search" 
-               hx-trigger="keyup changed delay:200ms" 
-               hx-target="#snippet-grid" 
-               placeholder="> search snippets... (Ctrl + /)" 
-               class="terminal-input flex-grow p-3 rounded font-mono text-sm w-full md:w-2/3">
+        <div class="relative flex-grow w-full md:w-2/3">
+            <input type="text" 
+                   id="search-input"
+                   name="q"
+                   hx-get="/search" 
+                   hx-trigger="keyup changed delay:200ms" 
+                   hx-target="#snippet-grid" 
+                   placeholder="> search snippets... (Ctrl + /)" 
+                   class="terminal-input w-full p-3 rounded font-mono text-sm pr-10">
+            <button id="clear-search" 
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white hidden"
+                    onclick="document.getElementById('search-input').value = ''; htmx.trigger('#search-input', 'keyup');">
+                ✕
+            </button>
+        </div>
         
         <button onclick="document.getElementById('add-form').toggleAttribute('open')" 
                 class="terminal-btn px-6 py-3 rounded font-bold text-sm text-center"
@@ -279,6 +286,20 @@
             wrapper.classList.toggle('collapsed');
             btn.textContent = wrapper.classList.contains('collapsed') ? 'Show more' : 'Show less';
         }
+    }
+
+    // Toggle Clear Search Button
+    const searchInput = document.getElementById('search-input');
+    const clearBtn = document.getElementById('clear-search');
+    
+    if (searchInput && clearBtn) {
+        searchInput.addEventListener('input', () => {
+            if (searchInput.value.trim() !== "") {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+        });
     }
 </script>
 {% endblock %}

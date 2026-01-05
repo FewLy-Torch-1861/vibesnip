@@ -51,6 +51,9 @@
 </div>
 {% else %}
 <div class="col-span-full text-center py-12 text-gray-500 border border-dashed border-border rounded">
-    <p>No snippets found. <br> Run `add_snippet` to get started.</p>
+    <p>No snippets found.</p>
+    <button onclick="document.getElementById('add-form').setAttribute('open', ''); document.querySelector('input[name=\'title\']').focus();" class="mt-2 text-accent hover:underline text-sm">
+        Create one?
+    </button>
 </div>
 {% endfor %}
