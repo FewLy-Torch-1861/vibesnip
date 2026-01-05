@@ -1,10 +1,47 @@
 :root {
+    /* Default: Catppuccin Mocha */
     --bg: #1e1e2e;
     --text: #cdd6f4;
     --accent: #89b4fa;
     --success: #a6e3a1;
     --border: #45475a;
     --card: #181825;
+}
+
+[data-theme="gruvbox"] {
+    --bg: #282828;
+    --text: #ebdbb2;
+    --accent: #fabd2f;
+    --success: #b8bb26;
+    --border: #504945;
+    --card: #3c3836;
+}
+
+[data-theme="rosepine"] {
+    --bg: #191724;
+    --text: #e0def4;
+    --accent: #c4a7e7;
+    --success: #31748f;
+    --border: #26233a;
+    --card: #1f1d2e;
+}
+
+[data-theme="adwaita"] {
+    --bg: #1e1e1e;
+    --text: #ffffff;
+    --accent: #3584e4;
+    --success: #26a269;
+    --border: #373737;
+    --card: #303030;
+}
+
+[data-theme="dracula"] {
+    --bg: #282a36;
+    --text: #f8f8f2;
+    --accent: #bd93f9;
+    --success: #50fa7b;
+    --border: #6272a4;
+    --card: #44475a;
 }
 
 body {
