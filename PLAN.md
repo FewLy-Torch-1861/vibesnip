@@ -7,14 +7,26 @@ Build a privacy-focused, TUI-themed code snippet manager called **VibeSnip**.
 *   **Backend:** Python (FastAPI) - fast, lightweight, perfect for CLI lovers.
 *   **Frontend:** HTML + HTMX - simple, dynamic interactions without heavy JS frameworks.
 *   **Styling:** Tailwind CSS (via CDN) - for that crisp, custom "terminal" aesthetic.
+*   **Editor:** Monaco Editor - for a rich code editing experience.
 *   **Database:** SQLite - local, simple, file-based.
 
-## Features (MVP)
-1.  **Dashboard:** List all snippets with a retro terminal look.
-2.  **Add Snippet:** Modal or page to paste code, language, and tags.
-3.  **Search:** Instant "fuzzy-style" filtering (powered by HTMX).
-4.  **Copy:** One-click copy to clipboard.
-5.  **Theme:** Dark mode by default (Dracula/Gruvbox style).
+## Features (Completed)
+- [x] **Dashboard:** List all snippets with a retro terminal look.
+- [x] **Add Snippet:** Collapsible form with Monaco Editor integration.
+- [x] **Search:** Instant "fuzzy-style" filtering (powered by HTMX).
+- [x] **Copy:** One-click copy to clipboard.
+- [x] **Delete:** Secure deletion with confirmation modal.
+- [x] **Edit:** Update existing snippets seamlessly.
+- [x] **Theme Customization:** Extensive theme picker + custom theme creator.
+- [x] **Syntax Highlighting:** Highlight.js for viewing, Monaco for editing.
+- [x] **Keyboard Shortcuts:** `j/k` navigation, `e` to edit, `/` to search.
+
+## Future Ideas / Backlog
+1.  **Tag Management:** Clickable tags to instantly filter the list.
+2.  **Backup/Export:** Export all snippets to JSON/ZIP for safekeeping.
+3.  **Shortcuts Help:** A modal (`?`) showing all available keyboard shortcuts.
+4.  **Raw View:** A simple endpoint to view raw code content (useful for curling).
+5.  **Multi-file Snippets:** Support storing multiple files in one snippet entry.
 
 ## Next Steps
-I will initialize the Python environment and start building the backend structure.
+Refine the UI/UX based on usage and address any bugs in the editor integration.
