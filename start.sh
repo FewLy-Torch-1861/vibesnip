@@ -21,7 +21,7 @@ case "$1" in
 
     echo "Starting VibeSnip..."
     source .venv/bin/activate
-    nohup uvicorn main:app --host 0.0.0.0 --port 8000 > "$LOG_FILE" 2>&1 &
+    nohup .venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000 > "$LOG_FILE" 2>&1 &
     PID=$!
     echo "$PID" > "$PID_FILE"
     echo "VibeSnip started with PID $PID"
