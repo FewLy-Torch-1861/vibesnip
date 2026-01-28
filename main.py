@@ -20,7 +20,7 @@ def get_db():
         db.close()
 
 @app.get("/snippets/{snippet_id}", response_class=JSONResponse)
-async def get_snippet_json(snippet_id: int, db: Session = Depends(get_db)):
+def get_snippet_json(snippet_id: int, db: Session = Depends(get_db)):
     print(f"DEBUG: fetching snippet id {snippet_id} (type: {type(snippet_id)})")
     snippet = db.query(models.Snippet).filter(models.Snippet.id == snippet_id).first()
     if not snippet:
