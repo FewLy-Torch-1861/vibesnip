@@ -35,21 +35,46 @@ async def get_snippet_json(snippet_id: int, db: Session = Depends(get_db)):
     }
 
 @app.get("/", response_class=HTMLResponse)
-async def read_root(request: Request, db: Session = Depends(get_db)):
-    snippets = db.query(models.Snippet).order_by(models.Snippet.id.desc()).all()
-    return templates.TemplateResponse("index.html", {"request": request, "snippets": snippets})
+async def read_root(request: Request, page: int = 1, db: Session = Depends(get_db)):
+    limit = 20
+    offset = (page - 1) * limit
+    snippets = db.query(models.Snippet).order_by(models.Snippet.id.desc()).offset(offset).limit(limit + 1).all()
+    has_next = len(snippets) > limit
+    snippets = snippets[:limit]
+    return templates.TemplateResponse("index.html", {
+        "request": request,
+        "snippets": snippets,
+        "page": page,
+        "has_next": has_next,
+        "q": ""
+    })
 
 @app.get("/search", response_class=HTMLResponse)
-async def search_snippets(request: Request, q: str = "", db: Session = Depends(get_db)):
+async def search_snippets(request: Request, q: str = "", page: int = 1, db: Session = Depends(get_db)):
+    limit = 20
+    offset = (page - 1) * limit
+    query = db.query(models.Snippet)
+
     if q:
-        snippets = db.query(models.Snippet).filter(
+        query = query.filter(
             (models.Snippet.title.ilike(f"%{q}%")) | 
             (models.Snippet.tags.ilike(f"%{q}%")) |
             (models.Snippet.language.ilike(f"%{q}%"))
-        ).all()
+        )
     else:
-        snippets = db.query(models.Snippet).order_by(models.Snippet.id.desc()).all()
-    return templates.TemplateResponse("snippet_list.html", {"request": request, "snippets": snippets})
+        query = query.order_by(models.Snippet.id.desc())
+
+    snippets = query.offset(offset).limit(limit + 1).all()
+    has_next = len(snippets) > limit
+    snippets = snippets[:limit]
+
+    return templates.TemplateResponse("snippet_list.html", {
+        "request": request,
+        "snippets": snippets,
+        "page": page,
+        "has_next": has_next,
+        "q": q
+    })
 
 @app.post("/add", response_class=HTMLResponse)
 async def save_snippet(
@@ -79,9 +104,19 @@ async def save_snippet(
     
     db.commit()
     
-    # Return updated list
-    snippets = db.query(models.Snippet).order_by(models.Snippet.id.desc()).all()
-    return templates.TemplateResponse("snippet_list.html", {"request": request, "snippets": snippets})
+    # Return updated list (first page only)
+    limit = 20
+    snippets = db.query(models.Snippet).order_by(models.Snippet.id.desc()).limit(limit + 1).all()
+    has_next = len(snippets) > limit
+    snippets = snippets[:limit]
+
+    return templates.TemplateResponse("snippet_list.html", {
+        "request": request,
+        "snippets": snippets,
+        "page": 1,
+        "has_next": has_next,
+        "q": ""
+    })
 
 @app.delete("/delete/{snippet_id}", response_class=HTMLResponse)
 async def delete_snippet(request: Request, snippet_id: int, db: Session = Depends(get_db)):

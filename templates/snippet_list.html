@@ -50,10 +50,22 @@
     </div>
 </div>
 {% else %}
+{% if page == 1 %}
 <div class="col-span-full text-center py-12 text-gray-500 border border-dashed border-border rounded">
     <p>No snippets found.</p>
     <button onclick="document.getElementById('add-form').setAttribute('open', ''); document.querySelector('input[name=\'title\']').focus();" class="mt-2 text-accent hover:underline text-sm">
         Create one?
     </button>
 </div>
+{% endif %}
 {% endfor %}
+
+{% if has_next %}
+<div id="load-more-{{ page }}"
+     class="col-span-full text-center py-4 text-gray-400 text-sm"
+     hx-get="/search?q={{ q }}&page={{ page + 1 }}"
+     hx-trigger="revealed"
+     hx-swap="outerHTML">
+    <span class="animate-pulse">Loading more snippets...</span>
+</div>
+{% endif %}
