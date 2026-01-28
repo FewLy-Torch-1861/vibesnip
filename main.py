@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, Depends, Form, HTTPException
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -20,7 +20,7 @@ def get_db():
         db.close()
 
 @app.get("/snippets/{snippet_id}", response_class=JSONResponse)
-async def get_snippet_json(snippet_id: int, db: Session = Depends(get_db)):
+def get_snippet_json(snippet_id: int, db: Session = Depends(get_db)):
     print(f"DEBUG: fetching snippet id {snippet_id} (type: {type(snippet_id)})")
     snippet = db.query(models.Snippet).filter(models.Snippet.id == snippet_id).first()
     if not snippet:
@@ -34,8 +34,15 @@ async def get_snippet_json(snippet_id: int, db: Session = Depends(get_db)):
         "tags": snippet.tags
     }
 
+@app.get("/raw/{snippet_id}", response_class=PlainTextResponse)
+async def get_snippet_raw(snippet_id: int, db: Session = Depends(get_db)):
+    snippet = db.query(models.Snippet).filter(models.Snippet.id == snippet_id).first()
+    if not snippet:
+        raise HTTPException(status_code=404, detail="Snippet not found")
+    return snippet.code
+
 @app.get("/", response_class=HTMLResponse)
-async def read_root(request: Request, page: int = 1, db: Session = Depends(get_db)):
+def read_root(request: Request, page: int = 1, db: Session = Depends(get_db)):
     limit = 20
     offset = (page - 1) * limit
     snippets = db.query(models.Snippet).order_by(models.Snippet.id.desc()).offset(offset).limit(limit + 1).all()
@@ -50,7 +57,7 @@ async def read_root(request: Request, page: int = 1, db: Session = Depends(get_d
     })
 
 @app.get("/search", response_class=HTMLResponse)
-async def search_snippets(request: Request, q: str = "", page: int = 1, db: Session = Depends(get_db)):
+def search_snippets(request: Request, q: str = "", page: int = 1, db: Session = Depends(get_db)):
     limit = 20
     offset = (page - 1) * limit
     query = db.query(models.Snippet)
@@ -77,7 +84,7 @@ async def search_snippets(request: Request, q: str = "", page: int = 1, db: Sess
     })
 
 @app.post("/add", response_class=HTMLResponse)
-async def save_snippet(
+def save_snippet(
     request: Request,
     snippet_id: str = Form(None), # Optional ID for updates
     title: str = Form(...),
@@ -119,7 +126,7 @@ async def save_snippet(
     })
 
 @app.delete("/delete/{snippet_id}", response_class=HTMLResponse)
-async def delete_snippet(request: Request, snippet_id: int, db: Session = Depends(get_db)):
+def delete_snippet(request: Request, snippet_id: int, db: Session = Depends(get_db)):
     snippet = db.query(models.Snippet).filter(models.Snippet.id == snippet_id).first()
     if snippet:
         db.delete(snippet)

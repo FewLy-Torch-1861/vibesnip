@@ -31,13 +31,15 @@
 
     <div class="flex justify-between items-center text-xs text-gray-400 mt-2">
         <div class="flex gap-2">
-            {% for tag in snippet.tags.split(',') %}
-                {% if tag.strip() %}
-                <span class="before:content-['#'] hover:text-white cursor-pointer">{{ tag.strip() }}</span>
-                {% endif %}
+            {% for tag in snippet.tag_list %}
+                <span class="before:content-['#'] hover:text-white cursor-pointer">{{ tag }}</span>
             {% endfor %}
         </div>
         <div class="flex gap-3">
+            <a href="/raw/{{ snippet.id }}" target="_blank"
+               class="text-blue-400 hover:text-white hover:underline">
+                [raw]
+            </a>
             <button onclick="loadSnippet({{ snippet.id }})" 
                     class="text-accent hover:text-white hover:underline">
                 [edit]

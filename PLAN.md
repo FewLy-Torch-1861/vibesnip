@@ -19,14 +19,18 @@ Build a privacy-focused, TUI-themed code snippet manager called **VibeSnip**.
 - [x] **Edit:** Update existing snippets seamlessly.
 - [x] **Theme Customization:** Extensive theme picker + custom theme creator.
 - [x] **Syntax Highlighting:** Highlight.js for viewing, Monaco for editing.
-- [x] **Keyboard Shortcuts:** `j/k` navigation, `e` to edit, `/` to search.
+- [x] Keyboard Shortcuts: `j/k` navigation, `e` to edit, `/` to search.
+- [x] Raw View: A simple endpoint to view raw code content (useful for curling).
+- [x] Shortcuts Help: A modal (`?`) showing all available keyboard shortcuts.
+- [x] Command Palette: A `Ctrl+K` (or `Meta+K`) command palette for rapid navigation and actions.
 
 ## Future Ideas / Backlog
 1.  **Tag Management:** Clickable tags to instantly filter the list.
 2.  **Backup/Export:** Export all snippets to JSON/ZIP for safekeeping.
-3.  **Shortcuts Help:** A modal (`?`) showing all available keyboard shortcuts.
-4.  **Raw View:** A simple endpoint to view raw code content (useful for curling).
-5.  **Multi-file Snippets:** Support storing multiple files in one snippet entry.
+3.  **Gist Sync:** Import from and export to GitHub Gists.
+4.  **Collection Folders:** Grouping snippets into logical folders or projects.
+5.  **Editor Settings:** Customizing Monaco's font size, line numbers, and word wrap via a settings panel.
+6.  **Multi-file Snippets:** Support storing multiple files in one snippet entry.
 
 ## Next Steps
 Refine the UI/UX based on usage and address any bugs in the editor integration.
