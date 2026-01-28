@@ -52,7 +52,7 @@ async def search_snippets(request: Request, q: str = "", db: Session = Depends(g
     return templates.TemplateResponse("snippet_list.html", {"request": request, "snippets": snippets})
 
 @app.post("/add", response_class=HTMLResponse)
-async def save_snippet(
+def save_snippet(
     request: Request,
     snippet_id: str = Form(None), # Optional ID for updates
     title: str = Form(...),
