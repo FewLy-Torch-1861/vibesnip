@@ -20,7 +20,7 @@ def get_db():
         db.close()
 
 @app.get("/snippets/{snippet_id}", response_class=JSONResponse)
-async def get_snippet_json(snippet_id: int, db: Session = Depends(get_db)):
+def get_snippet_json(snippet_id: int, db: Session = Depends(get_db)):
     print(f"DEBUG: fetching snippet id {snippet_id} (type: {type(snippet_id)})")
     snippet = db.query(models.Snippet).filter(models.Snippet.id == snippet_id).first()
     if not snippet:
@@ -42,7 +42,7 @@ async def get_snippet_raw(snippet_id: int, db: Session = Depends(get_db)):
     return snippet.code
 
 @app.get("/", response_class=HTMLResponse)
-async def read_root(request: Request, db: Session = Depends(get_db)):
+def read_root(request: Request, db: Session = Depends(get_db)):
     snippets = db.query(models.Snippet).order_by(models.Snippet.id.desc()).all()
     return templates.TemplateResponse("index.html", {"request": request, "snippets": snippets})
 
@@ -59,7 +59,7 @@ async def search_snippets(request: Request, q: str = "", db: Session = Depends(g
     return templates.TemplateResponse("snippet_list.html", {"request": request, "snippets": snippets})
 
 @app.post("/add", response_class=HTMLResponse)
-async def save_snippet(
+def save_snippet(
     request: Request,
     snippet_id: str = Form(None), # Optional ID for updates
     title: str = Form(...),
@@ -91,7 +91,7 @@ async def save_snippet(
     return templates.TemplateResponse("snippet_list.html", {"request": request, "snippets": snippets})
 
 @app.delete("/delete/{snippet_id}", response_class=HTMLResponse)
-async def delete_snippet(request: Request, snippet_id: int, db: Session = Depends(get_db)):
+def delete_snippet(request: Request, snippet_id: int, db: Session = Depends(get_db)):
     snippet = db.query(models.Snippet).filter(models.Snippet.id == snippet_id).first()
     if snippet:
         db.delete(snippet)
