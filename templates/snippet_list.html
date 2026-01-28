@@ -38,6 +38,10 @@
             {% endfor %}
         </div>
         <div class="flex gap-3">
+            <a href="/raw/{{ snippet.id }}" target="_blank"
+               class="text-blue-400 hover:text-white hover:underline">
+                [raw]
+            </a>
             <button onclick="loadSnippet({{ snippet.id }})" 
                     class="text-accent hover:text-white hover:underline">
                 [edit]

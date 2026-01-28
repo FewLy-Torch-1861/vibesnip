@@ -240,13 +240,17 @@
 
         // Context: Navigation (Only if NOT in input)
         if (!isInput && !isEditor) {
-            if (e.key === 'j' || e.key === 'ArrowDown') {
+            // j / Down (Next)
+            if ((e.code === 'KeyJ' && !e.altKey && !e.ctrlKey && !e.metaKey) || e.key === 'ArrowDown') {
                 selectedIndex++;
                 updateSelection();
-            } else if (e.key === 'k' || e.key === 'ArrowUp') {
+            } 
+            // k / Up (Previous)
+            else if ((e.code === 'KeyK' && !e.altKey && !e.ctrlKey && !e.metaKey) || e.key === 'ArrowUp') {
                 selectedIndex--;
                 updateSelection();
-            } else if (e.key === 'e') {
+            } 
+            else if (e.code === 'KeyE' && !e.altKey && !e.ctrlKey && !e.metaKey) {
                 // Edit Selected
                 const snippets = getSnippets();
                 if (selectedIndex >= 0 && snippets[selectedIndex]) {

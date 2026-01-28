@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, Depends, Form, HTTPException
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -33,6 +33,13 @@ async def get_snippet_json(snippet_id: int, db: Session = Depends(get_db)):
         "code": snippet.code,
         "tags": snippet.tags
     }
+
+@app.get("/raw/{snippet_id}", response_class=PlainTextResponse)
+async def get_snippet_raw(snippet_id: int, db: Session = Depends(get_db)):
+    snippet = db.query(models.Snippet).filter(models.Snippet.id == snippet_id).first()
+    if not snippet:
+        raise HTTPException(status_code=404, detail="Snippet not found")
+    return snippet.code
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request, db: Session = Depends(get_db)):
