@@ -47,7 +47,7 @@ def read_root(request: Request, db: Session = Depends(get_db)):
     return templates.TemplateResponse("index.html", {"request": request, "snippets": snippets})
 
 @app.get("/search", response_class=HTMLResponse)
-async def search_snippets(request: Request, q: str = "", db: Session = Depends(get_db)):
+def search_snippets(request: Request, q: str = "", db: Session = Depends(get_db)):
     if q:
         snippets = db.query(models.Snippet).filter(
             (models.Snippet.title.ilike(f"%{q}%")) | 
