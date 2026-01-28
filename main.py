@@ -35,7 +35,7 @@ async def get_snippet_json(snippet_id: int, db: Session = Depends(get_db)):
     }
 
 @app.get("/", response_class=HTMLResponse)
-async def read_root(request: Request, db: Session = Depends(get_db)):
+def read_root(request: Request, db: Session = Depends(get_db)):
     snippets = db.query(models.Snippet).order_by(models.Snippet.id.desc()).all()
     return templates.TemplateResponse("index.html", {"request": request, "snippets": snippets})
 
