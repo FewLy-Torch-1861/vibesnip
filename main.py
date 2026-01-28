@@ -84,7 +84,7 @@ def save_snippet(
     return templates.TemplateResponse("snippet_list.html", {"request": request, "snippets": snippets})
 
 @app.delete("/delete/{snippet_id}", response_class=HTMLResponse)
-async def delete_snippet(request: Request, snippet_id: int, db: Session = Depends(get_db)):
+def delete_snippet(request: Request, snippet_id: int, db: Session = Depends(get_db)):
     snippet = db.query(models.Snippet).filter(models.Snippet.id == snippet_id).first()
     if snippet:
         db.delete(snippet)
