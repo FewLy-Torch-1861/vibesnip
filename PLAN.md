@@ -24,9 +24,9 @@ Build a privacy-focused, TUI-themed code snippet manager called **VibeSnip**.
 - [x] Shortcuts Help: A modal (`?`) showing all available keyboard shortcuts.
 - [x] Command Palette: A `Ctrl+K` (or `Meta+K`) command palette for rapid navigation and actions.
 - [x] **Backup/Export:** Export and Import all snippets to/from JSON for safekeeping.
+- [x] **Tag Management:** Clickable tags to instantly filter the list.
 
 ## Future Ideas / Backlog
-1.  **Tag Management:** Clickable tags to instantly filter the list.
 3.  **Gist Sync:** Import from and export to GitHub Gists.
 4.  **Collection Folders:** Grouping snippets into logical folders or projects.
 5.  **Editor Settings:** Customizing Monaco's font size, line numbers, and word wrap via a settings panel.

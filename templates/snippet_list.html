@@ -32,7 +32,8 @@
     <div class="flex justify-between items-center text-xs text-gray-400 mt-2">
         <div class="flex gap-2">
             {% for tag in snippet.tag_list %}
-                <span class="before:content-['#'] hover:text-white cursor-pointer">{{ tag }}</span>
+                <span class="before:content-['#'] hover:text-accent cursor-pointer transition-colors" 
+                      onclick="filterByTag('{{ tag }}')">{{ tag }}</span>
             {% endfor %}
         </div>
         <div class="flex gap-3">
