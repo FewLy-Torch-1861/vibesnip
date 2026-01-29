@@ -677,6 +677,20 @@
             }
         }
 
+        function filterByTag(tagName) {
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.value = tagName;
+                searchInput.focus();
+                // Show clear button if it exists
+                const clearBtn = document.getElementById('clear-search');
+                if (clearBtn) clearBtn.classList.remove('hidden');
+                
+                // Trigger HTMX search
+                htmx.trigger(searchInput, 'keyup');
+            }
+        }
+
         // --- Command Palette Logic ---
 
         function toggleCommandPalette() {
