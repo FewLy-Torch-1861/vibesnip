@@ -97,3 +97,40 @@ def delete_snippet(request: Request, snippet_id: int, db: Session = Depends(get_
         db.delete(snippet)
         db.commit()
     return "" # Return nothing to remove element from DOM
+
+@app.get("/export")
+def export_snippets(db: Session = Depends(get_db)):
+    snippets = db.query(models.Snippet).all()
+    data = [
+        {
+            "title": s.title,
+            "language": s.language,
+            "code": s.code,
+            "tags": s.tags
+        } for s in snippets
+    ]
+    return JSONResponse(
+        content=data,
+        headers={"Content-Disposition": "attachment; filename=vibesnip_backup.json"}
+    )
+
+@app.post("/import")
+async def import_snippets(request: Request, db: Session = Depends(get_db)):
+    try:
+        data = await request.json()
+        if not isinstance(data, list):
+            raise HTTPException(status_code=400, detail="Invalid backup format")
+        
+        for item in data:
+            new_snippet = models.Snippet(
+                title=item.get("title", "Imported Snippet"),
+                language=item.get("language", "plaintext"),
+                code=item.get("code", ""),
+                tags=item.get("tags", "")
+            )
+            db.add(new_snippet)
+        
+        db.commit()
+        return {"status": "success", "count": len(data)}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Import failed: {str(e)}")
